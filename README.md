@@ -223,127 +223,37 @@ The system follows a layered, unidirectional architectural pattern:
 
 
                   ┌────────────────────────────────────────┐
-
-
-
-                  │          FastAPI Route Handler          │
-
-
-
+                  │          FastAPI Route Handler         │
                   │ (HTTP parsing, Status codes, Response) │
-
-
-
                   └───────────────────┬────────────────────┘
-
-
-
                                       │
-
-
-
                                       ▼
-
-
-
                   ┌────────────────────────────────────────┐
-
-
-
                   │          Pydantic Schema Layer         │
-
-
-
                   │   (Validation, Data sanitization)      │
-
-
-
                   └───────────────────┬────────────────────┘
-
-
-
                                       │
-
-
-
                                       ▼
-
-
-
                   ┌────────────────────────────────────────┐
-
-
-
                   │             Service Layer              │
-
-
-
                   │ (Business logic, State machine, Rules) │
-
-
-
                   └───────────────────┬────────────────────┘
-
-
-
                                       │
-
-
-
                                       ▼
-
-
-
                   ┌────────────────────────────────────────┐
-
-
-
                   │           Repository Layer             │
-
-
-
                   │   (ORM queries, Eager loading, DTOs)   │
-
-
-
                   └───────────────────┬────────────────────┘
-
-
-
                                       │
-
-
-
                                       ▼
-
-
-
                   ┌────────────────────────────────────────┐
-
-
-
                   │        PostgreSQL Database 16          │
-
-
-
                   │ (Foreign keys, Unique index, Numeric)  │
-
-
-
                   └────────────────────────────────────────┘
-
-
 
 ```
 
-
-
-
-
-
-
 ### Core Architecture Guidelines:
-
 
 
 - **Focused Route Handlers:** Routes are responsible for parsing requests, returning HTTP responses, and passing work to service methods.
@@ -361,61 +271,22 @@ The system follows a layered, unidirectional architectural pattern:
 - **Consistent Error Format:** Application exceptions use a common error response structure:
 
 
-
-\  ```json
-
-
+```bash
 
   {
-
-
-
     "success": false,
-
-
-
     "error": {
-
-
-
       "code": "ERROR_CODE",
-
-
-
       "message": "Human readable error description."
-
-
-
     }
-
-
-
   }
 
-
-
-\  ```
-
-
-
-
-
-
+```
 
 ---
 
 
-
-
-
-
-
 ## 3. Tech Stack
-
-
-
-
-
 
 
 | Component | Technology | Rationale |
@@ -432,30 +303,14 @@ The system follows a layered, unidirectional architectural pattern:
 
 
 
-
-
-
 ---
-
-
-
-
-
-
-
 
 
 ## 5. Database Design & ER Diagram
 
 
 
-
-
-
-
 ```mermaid
-
-
 
 erDiagram
 
@@ -1267,122 +1122,45 @@ sequenceDiagram
 | **POST** | `/api/v1/payments/webhook` | No | Idempotent payment gateway webhook receiver |
 
 
-
-
-
-
-
 ---
-
-
-
-
-
 
 
 ## 11. Example API Requests & Responses
 
 
-
-
-
-
-
 ### 1. User Signup
-
-
 
 ```bash
 
-
-
 POST /api/v1/auth/signup
-
-
 
 Content-Type: application/json
 
-
-
-
-
-
-
 {
-
-
-
   "email": "sarah.connor@example.com",
-
-
-
   "password": "SecurePassword123!",
-
-
-
   "full_name": "Sarah Connor"
-
-
-
 }
 
 
-
 ```
-
-
 
 **Response (201 Created):**
 
 
-
 ```json
 
-
-
 {
-
-
-
   "id": 1,
-
-
-
   "email": "sarah.connor@example.com",
-
-
-
   "full_name": "Sarah Connor",
-
-
-
   "role": "PATIENT",
-
-
-
   "is_active": true,
-
-
-
   "created_at": "2026-09-27T00:15:00Z",
-
-
-
   "updated_at": "2026-09-27T00:15:00Z"
-
-
-
 }
 
-
-
 ```
-
-
-
-
-
-
 
 ### 2. Create Booking
 
@@ -1390,151 +1168,53 @@ Content-Type: application/json
 
 ```bash
 
-
-
 POST /api/v1/bookings
-
-
 
 Authorization: Bearer \\<JWT_TOKEN>
 
-
-
 Content-Type: application/json
 
-
-
-
-
-
-
 {
-
-
-
   "centre_test_id": 1,
-
-
-
   "appointment_slot_id": 5
-
-
-
 }
 
-
-
 ```
-
-
 
 **Response (201 Created):**
 
-
-
 ```json
 
-
-
 {
-
-
-
   "id": 1,
-
-
-
   "booking_reference": "BKG-20260927-9A1F3B20",
-
-
-
   "user_id": 1,
-
-
-
   "centre_test_id": 1,
-
-
-
   "appointment_slot_id": 5,
-
-
-
   "amount": "650.00",
-
-
-
   "status": "PENDING",
-
-
-
   "created_at": "2026-09-27T00:18:00Z",
-
-
-
   "updated_at": "2026-09-27T00:18:00Z"
-
-
-
 }
 
-
-
 ```
-
-
-
-
-
-
 
 ### 3. Idempotent Payment Webhook
 
-
-
 ```bash
-
-
 
 POST /api/v1/payments/webhook
 
-
-
 Content-Type: application/json
 
-
-
-
-
-
-
 {
-
-
-
   "event_id": "evt_wh_98421049",
-
-
-
   "event_type": "payment.updated",
-
-
-
   "payment_id": "PAY-20260927-44E290BA",
-
-
-
   "status": "SUCCESS"
-
-
-
 }
 
-
-
 ```
-
-
 
 **Response (200 OK):**
 
@@ -1542,98 +1222,36 @@ Content-Type: application/json
 
 ```json
 
-
-
 {
-
-
-
   "success": true,
-
-
-
   "event_id": "evt_wh_98421049",
-
-
-
   "message": "Webhook processed successfully.",
-
-
-
   "status": "SUCCESS",
-
-
-
   "processed_at": "2026-09-27T00:21:00Z"
-
-
-
 }
 
 
 
 ```
-
-
 
 **If re-sent with the same `event_id`:**
 
-
-
 ```json
-
-
-
 {
-
-
-
   "success": true,
-
-
-
   "event_id": "evt_wh_98421049",
-
-
-
   "message": "Webhook event already processed.",
-
-
-
   "status": "ALREADY_PROCESSED",
-
-
-
   "processed_at": "2026-09-27T00:21:00Z"
-
-
-
 }
 
-
-
 ```
-
-
-
-
-
 
 
 ---
 
 
-
-
-
-
-
 ## 12. Environment Variables
-
-
-
-
-
 
 
 | Variable | Default (Local) | Description |
@@ -1647,145 +1265,49 @@ Content-Type: application/json
 | `LOG_LEVEL` | `INFO` | Application log verbosity |
 
 
-
-
-
-
-
 ---
-
-
-
-
-
 
 
 ## 13. Local Development Setup
 
-
-
-
-
-
-
 ### Prerequisites
 
-
-
 - Python 3.12+ (or 3.13)
-
-
 
 - PostgreSQL (or local SQLite)
 
 
-
-
-
-
-
 ### Installation
-
-
 
 ```bash
 
-
-
 *# 1. Clone the repository*
-
-
-
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-
-
-
+git clone https://github.com/SnehaSharma00/EVE-project.git
 cd sde-backend-assignment
 
-
-
-
-
-
-
 *# 2. Create virtual environment*
-
-
-
 python -m venv .venv
-
-
-
 source .venv/bin/activate  *# On Windows: .venv\Scripts\activate*
 
-
-
-
-
-
-
 *# 3. Install dependencies*
-
-
-
 pip install -r requirements.txt
 
-
-
-
-
-
-
 *# 4. Configure environment*
-
-
-
 cp .env.example .env
 
-
-
-
-
-
-
 *# 5. Apply database migrations*
-
-
-
 alembic upgrade head
 
-
-
-
-
-
-
 *# 6. Start development server*
-
-
-
 uvicorn app.main:app --reload --port 8000
 
-
-
 ```
-
 
 
 Interactive Swagger documentation will be available at: **http://localhost:8000/docs**
 
 
-
-
-
-
-
 ---
-
-
-
-
-
 
 
 ## 14. Docker & Docker Compose Deployment
@@ -1806,15 +1328,8 @@ The application is fully containerized with automated migrations on boot:
 
 ```bash
 
-
-
 *# Start PostgreSQL and FastAPI together*
-
-
-
 docker compose up --build
-
-
 
 ```
 
@@ -1854,95 +1369,32 @@ docker compose up --build
 
 ```bash
 
-
-
 *# Apply migrations to latest schema*
-
-
-
 alembic upgrade head
 
-
-
-
-
-
-
 *# Rollback one migration*
-
-
-
 alembic downgrade -1
 
-
-
-
-
-
-
 *# Generate a new auto-detected migration*
-
-
-
 alembic revision --autogenerate -m "add_new_feature"
-
-
 
 ```
 
-
-
-
-
-
-
 ---
 
-
-
-
-
-
-
 ## 16. Running Automated Tests & Coverage
-
-
-
-
-
-
 
 The test suite runs against an isolated in-memory SQLite database for maximum speed and safety.
 
 
 
-
-
-
-
 ```bash
 
-
-
 *# Run all tests with short traceback*
-
-
-
 pytest
 
-
-
-
-
-
-
 *# Run tests with coverage report*
-
-
-
 pytest --cov=app
-
-
 
 ```
 
@@ -1958,119 +1410,34 @@ pytest --cov=app
 
 ```
 
-
-
 Name                                     Stmts   Miss  Cover
-
-
-
 ------------------------------------------------------------
-
-
-
 app\api\deps.py                             42      9    79%
-
-
-
 app\api\routes\auth.py                      20      0   100%
-
-
-
 app\api\routes\bookings.py                  25      2    92%
-
-
-
 app\api\routes\centres.py                   43      0   100%
-
-
-
 app\api\routes\health.py                    15      2    87%
-
-
-
 app\api\routes\payments.py                  16      2    88%
-
-
-
 app\api\routes\tests.py                     21      0   100%
-
-
-
 app\api\routes\webhooks.py                   9      0   100%
-
-
-
 app\core\config.py                          25      1    96%
-
-
-
 app\core\exceptions.py                      35      1    97%
-
-
-
 app\core\logging.py                         23      0   100%
-
-
-
 app\core\security.py                        22      0   100%
-
-
-
 app\db\database.py                          16      4    75%
-
-
-
 app\db\models\\\\* (all 9 model modules)      137      0   100%
-
-
-
 app\repositories\\\\* (all 6 repos)           195     18    91%
-
-
-
 app\schemas\\\\* (all 9 schema modules)       154      0   100%
-
-
-
 app\services\\\\* (all 6 services)            284     31    89%
-
-
-
 ------------------------------------------------------------
-
-
-
 TOTAL                                     1224    102    92%
-
-
-
 \\======================= 36 passed in 7.33s =======================
-
-
 
 ```
 
-
-
-
-
-
-
 ---
 
-
-
-
-
-
-
 ## 17. Edge Cases & Error Handling
-
-
-
-
-
-
 
 | Scenario | Handled Behavior | Status Code |
 |---|---|:---:|
@@ -2088,98 +1455,35 @@ TOTAL                                     1224    102    9
 | **Webhook on Cancelled Booking** | Updates payment audit status but preserves `CANCELLED` booking state | `200 OK` |
 
 
-
-
-
-
-
 ---
-
-
-
-
-
-
 
 ## 18. Architecture Choices & Engineering Considerations
 
-
-
-
-
-
-
 1. **Modular Monolith Instead of Microservices:**
-
-
 
    - **Reasoning:** For a diagnostic booking service of this size, a modular monolith keeps domain boundaries between routes, services, and repositories while avoiding network latency, distributed transaction complexity (2PC/Saga), and additional orchestration overhead.
 
-
-
 2. **Synchronous Session with Threadpool Execution:**
-
-
 
    - **Reasoning:** Synchronous SQLAlchemy 2.0 keeps ORM relationship loading and transaction handling straightforward, while FastAPI's automatic threadpool offloading supports request execution without introducing unnecessary async ORM complexity.
 
-
-
 3. **Argon2id Instead of Standard Bcrypt:**
-
-
 
    - **Reasoning:** Argon2, the winner of the Password Hashing Competition (PHC), was selected for its memory-hard design and stronger resistance to hardware-accelerated password attacks.
 
-
-
 4. **Booking-Time Price Snapshot:**
-
-
 
    - **Reasoning:** Diagnostic test prices may change over time. Saving the selected price directly in `bookings.amount` preserves the original booking amount for historical accuracy and financial auditing.
 
-
-
-
-
-
-
 ---
-
-
-
-
-
 
 
 ## 19. Important Assumptions
 
-
-
-
-
-
-
 - Diagnostic centres manage their own catalog of tests and appointment slots.
-
-
-
 - Appointment slot times are stored and evaluated in UTC.
-
-
-
 - Simulated payment gateways communicate webhook status changes using standard reference codes.
-
-
-
 - Cancellations release the corresponding appointment slot back to the public pool for re-booking.
-
-
-
-
-
-
 
 ---
 
